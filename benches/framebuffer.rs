@@ -23,5 +23,23 @@ fn framebuffer_set_1bpp(c: &mut Criterion) {
     });
 }
 
-criterion_group!(framebuffer, framebuffer_set_1bpp,);
+fn framebuffer_get_1bpp(c: &mut Criterion) {
+    c.bench_function("framebuffer get pixel 1bpp", |b| {
+        let fb = Framebuffer::<
+            BinaryColor,
+            _,
+            LittleEndian,
+            320,
+            240,
+            { buffer_size::<BinaryColor>(320, 240) },
+        >::new();
+
+        b.iter(|| {
+            fb.pixel(Point::new(1, 1));
+            fb.pixel(Point::new(300, 200));
+        })
+    });
+}
+
+criterion_group!(framebuffer, framebuffer_set_1bpp, framebuffer_get_1bpp);
 criterion_main!(framebuffer);
